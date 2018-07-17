@@ -60,3 +60,16 @@ target_net = QNet(num_state, num_action)
 
 eval_net.apply(weight_initialization)
 target_net.apply(weight_initialization)
+
+
+# # 测试GPU CPU速度代码
+# # 发现GPU比CPU稍慢，所以放弃使用GPU
+# import torch
+# from time import time
+# 
+# eval_net = eval_net.cuda()
+# start_time = time()
+# data = torch.randn((32, 4)).cuda()
+# res = eval_net(data)
+# print(time() - start_time)
+
