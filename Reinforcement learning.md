@@ -42,10 +42,10 @@
 ## dqn（off-policy）
 经验池，fix Q target，目的都是为了消除数据之间的相关性，为使用神经网络做的准备
 
-DQN原始论文：https://arxiv.org/abs/1312.5602
-Double DQN：https://arxiv.org/abs/1509.06461
-Prioritized Experience Replay DQN：https://arxiv.org/abs/1511.05952
-Dueling DQN：https://arxiv.org/abs/1511.06581
+* DQN原始论文：https://arxiv.org/abs/1312.5602
+* Double DQN：https://arxiv.org/abs/1509.06461
+* Prioritized Experience Replay DQN：https://arxiv.org/abs/1511.05952
+* Dueling DQN：https://arxiv.org/abs/1511.06581
 
 ## policy gradient
 输入状态，输出对应动作的概率，相对于Q-learning，可以处理连续控制的问题
