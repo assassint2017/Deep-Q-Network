@@ -53,8 +53,8 @@ for episode in range(max_episode):
         # 这里的reawrd的意义在于小车偏离中心点越多，奖励越小，杆子偏离角度越大，奖励越小
         reward = r1 + r2
 
-        # 存储记忆，也就是存放 s,a,r,s' 序列
-        dqn.store_memory(observation, action, reward, observation_)
+        # 存储记忆，也就是存放 s,a,r,s' 序列，这里还要多存储一个done的信息，用于计算q-target，见DQN.py
+        dqn.store_memory(observation, action, reward, observation_, done)
 
         # 记录本次episode的总奖励值
         episode_reward += reward

@@ -38,7 +38,7 @@ class DQN(object):
         self.memory_pool_capacity = memory_pool_capacity
 
         # 构建记忆库
-        self.memory_pool = np.zeros((memory_pool_capacity, num_state * 2 + 2))
+        self.memory_pool = np.zeros((memory_pool_capacity, num_state * 2 + 3))
 
         # 用于记录记忆库当前的大小
         self.memory_pool_size = 0
@@ -77,15 +77,21 @@ class DQN(object):
 
         return action
 
-    def store_memory(self, s, a, r, s_):
+    def store_memory(self, s, a, r, s_, done):
         """
 
         :param s: 当前状态 ndarray
         :param a: 在当前状态下执行的动作 int
         :param r: 在当前状态下执行动作后得到的奖励 float
         :param s_: 在当前状态下执行的动作后进行的下一状态 ndarray
+        :param done: 在当前状态下执行动作后有没有导致本次episode结束的标志位
         """
-        memory = np.hstack((s, a, r, s_))
+        if done is True:
+            done = 0
+        else:
+            done = 1
+
+        memory = np.hstack((s, a, r, s_, done))
 
         # 用新的记忆来覆盖老的记忆
         index = self.memory_pool_size % memory_pool_capacity
@@ -107,14 +113,17 @@ class DQN(object):
         observation_batch = torch.FloatTensor(memory_batch[:, :num_state])
         action_batch = torch.LongTensor(memory_batch[:, num_state]).unsqueeze(dim=1)
         reward_batch = torch.FloatTensor(memory_batch[:, num_state + 1]).unsqueeze(dim=1)
-        next_observation_batch = torch.FloatTensor(memory_batch[:, -num_state:])
+        next_observation_batch = torch.FloatTensor(memory_batch[:, num_state + 2:-1])
+        done_batch = torch.FloatTensor(memory_batch[:, -1]).unsqueeze(dim=1)
 
-        # 估计的q值
+        # 估计的q值 q_eval
         q_eval = eval_net(observation_batch).gather(1, action_batch)
 
-        # 现实中的q值，这里由于不用对target网络进行更新，因此仅使用farward模型即可
+        # 现实中的q值 q_target，这里由于不用对target网络进行更新，因此仅使用farward模型即可
+        # 这里许多乘一个done_batch的判断位信息，因为如果本回合已经结束，这时候的q_target应该应该只包括当前状态的奖励
+        # 而不包括下一状态的最大Q值
         with torch.no_grad():
-            q_target = reward_batch + gamma * target_net(next_observation_batch).max(1)[0].unsqueeze(dim=1)
+            q_target = reward_batch + gamma * target_net(next_observation_batch).max(1)[0].unsqueeze(dim=1) * done_batch
         # 根据现实和估计的q值之间的差距计算loss并进行反向传播
         loss = self.loss_func(q_eval, q_target)
 

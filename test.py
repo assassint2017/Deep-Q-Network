@@ -16,7 +16,7 @@ max_episode = 5  # 进行5场游戏的测试
 env = gym.make('CartPole-v0')  # 选择游戏
 env = env.unwrapped
 
-module_dir = './module/best_reward_628.0.pth'
+module_dir = './module/best_reward_1173.7.pth'
 eval_net.load_state_dict(torch.load(module_dir))
 
 reward_list = []
