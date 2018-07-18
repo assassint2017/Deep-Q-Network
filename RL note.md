@@ -43,7 +43,9 @@
 经验池，fix Q target，目的都是为了消除数据之间的相关性，为使用神经网络做的准备
 
 * DQN原始论文：https://arxiv.org/abs/1312.5602（Deepmind在nips2013上首次提出深度强化学习的概念）  
-下面是DQN的几种变体
+
+**下面是DQN的几种变体**
+
 * Double DQN：https://arxiv.org/abs/1509.06461
 * Prioritized Experience Replay DQN：https://arxiv.org/abs/1511.05952
 * Dueling DQN：https://arxiv.org/abs/1511.06581
